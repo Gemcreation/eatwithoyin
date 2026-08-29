@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+.nav-link.active {
+    @apply text-primaryColor transition-all duration-500 ease-in-out 
+}

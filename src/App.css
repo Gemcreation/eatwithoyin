@@ -1,0 +1,35 @@
+body {
+    @apply font-bodyFonts text-secondaryColor
+}
+
+h1, h2, h3, h4, h5, h6 {
+    @apply font-headFonts
+}
+
+p {
+    @apply leading-[30px]
+}
+
+.custom-shadow {
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.slide-btn:hover {
+    @apply transition-opacity duration-500 ease-in-out opacity-100
+}
+
+/* .foodList {
+    @apply h-[600px] overflow-y-scroll border p-4 rounded-md
+} */
+
+.checkList {
+    @apply overflow-y-scroll h-[300px]
+}
+
+ .checkList::-webkit-scrollbar {
+    @apply rounded w-[5px]
+}
+
+/* .foodList::-webkit-scrollbar-thumb {
+    @apply bg-primaryColor bg-opacity-50 rounded-full
+} */
