@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '../../app/store'
+import type { RootState } from '../../app/store'
 import { getItems, removeItem, updateItemQuantity } from '../../features/checkList'
 import { Cancel01Icon, Delete01Icon } from 'hugeicons-react'
 // import gsap from 'gsap'

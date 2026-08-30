@@ -41,8 +41,8 @@ const Footer: React.FC = () => {
         <section className='bg-secondaryColor text-mainColor'>
             <div className='max-w-[85%] mx-auto'>
                 <div className='flex justify-between items-center'>
-                    <div className='w-[150px] h-[70px]'>
-                        <img src={Logo} alt="logo" className='w-full h-full' />
+                    <div className='w-[75px] h-[70px] shrink-0 flex items-center justify-center overflow-hidden'>
+                        <img src={Logo} alt="logo" className='max-w-full max-h-full object-contain object-center' />
                     </div>
 
                     <div className='hidden lg:flex flex-col'>

@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+@theme {
+    --color-primaryColor: #cc2a2c;
+    --color-secondaryColor: #242424;
+    --color-mainColor: #ffffff;
+    --color-altColor: #f2b134;
+    --font-bodyFonts: ui-sans-serif, system-ui, sans-serif;
+    --font-headFonts: ui-sans-serif, system-ui, sans-serif;
+}
+
 .nav-link.active {
-    @theme text-primaryColor transition-all duration-500 ease-in-out 
+    @apply text-primaryColor transition-all duration-500 ease-in-out;
 }

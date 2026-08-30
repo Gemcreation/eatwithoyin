@@ -1,3 +1,5 @@
+@reference "./index.css";
+
 body {
     @apply font-bodyFonts text-secondaryColor
 }

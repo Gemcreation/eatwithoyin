@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import FoodLists from '../layouts/FoodLists'
 // import CheckLists from '../layouts/CheckLists'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../app/store'
+import type { RootState } from '../../app/store'
 import { items } from '../../api'
 
 interface OrderProps {

@@ -1,7 +1,7 @@
 import React from 'react'
 import Coke from '../../../assets/images/coke.png'
 import Juice from '../../../assets/images/juice.png'
-import { animateCTABtns, animateFirstDrink, animateFoodImg, animateHeroHeadLine, animateHeroParagraph, animateSecondDrink } from '../../../gsap'
+import { animateCTABtns, animateFirstDrink, animateFoodImg, animateHeroHeadLine, animateHeroParagraph, animateSecondDrink } from '../../../../gsap'
 import { useGSAP } from '@gsap/react'
 import { useNavigate } from 'react-router-dom'
 

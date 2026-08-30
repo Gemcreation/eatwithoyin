@@ -40,8 +40,8 @@ const Header: React.FC = () => {
   return (
       <section className='sticky top-0'>
           <header className='max-w-[85%] z-[999] mx-auto flex flex-row items-center justify-between sticky top-0'>
-              <div className='w-[160px] h-[80px] lg:w-[200px] lg:h-[100px]'>
-                <img src={Logo} alt="Oyin-Logo" className='h-20 w-auto' />
+              <div className='w-[128px] h-[64px] lg:w-[160px] lg:h-[80px] flex items-center justify-center overflow-hidden'>
+                <img src={Logo} alt="Oyin-Logo" className='max-w-full max-h-full object-contain object-center' />
               </div>
 
               <nav className='hidden text-mainColor text-lg lg:flex gap-[15px]'>
