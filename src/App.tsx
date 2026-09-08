@@ -10,6 +10,8 @@ import Footer from './components/layouts/Footer'
 import Home from './components/pages/Home'
 import Order from './components/pages/Order'
 import Gallery from './components/pages/Gallery'
+import Login from './components/pages/Login'
+import SignUp from './components/pages/SignUp'
 import CheckLists from './components/layouts/CheckLists'
 
 function App() {
@@ -32,6 +34,9 @@ function App() {
         <Route path='/' index element={<Home />} />
         <Route path='place-order' element={<Order checkListFunction={openCheckList} />} />
         <Route path='gallery' element={<Gallery />} />
+        {/* UI-only authentication routes; backend integration is intentionally deferred. */}
+        <Route path='login' element={<Login />} />
+        <Route path='signup' element={<SignUp />} />
       </Routes>
       <div>
         <Footer />
