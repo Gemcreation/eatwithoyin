@@ -9,6 +9,7 @@ import Footer from './components/layouts/Footer'
 // Components
 import Home from './components/pages/Home'
 import Order from './components/pages/Order'
+import Gallery from './components/pages/Gallery'
 import CheckLists from './components/layouts/CheckLists'
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
       <Routes>
         <Route path='/' index element={<Home />} />
         <Route path='place-order' element={<Order checkListFunction={openCheckList} />} />
+        <Route path='gallery' element={<Gallery />} />
       </Routes>
       <div>
         <Footer />

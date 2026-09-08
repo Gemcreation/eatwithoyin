@@ -27,7 +27,7 @@ const Header: React.FC = () => {
         },
         {
             label: 'Gallery',
-            path: 'gallery',
+            path: '/gallery',
             icon: Album02Icon
         },
     ]
