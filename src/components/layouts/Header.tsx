@@ -53,19 +53,20 @@ const Header: React.FC = () => {
     }
   return (
       <section className='sticky top-0'>
-          <header className='relative max-w-[85%] z-[999] mx-auto flex flex-row items-center justify-between sticky top-0'>
+          <header className='relative max-w-[85%] z-[999] mx-auto grid grid-cols-[auto_1fr_auto] items-center sticky top-0'>
               <div className='w-[128px] h-[64px] lg:w-[160px] lg:h-[80px] flex items-center justify-center overflow-hidden'>
                 <img src={Logo} alt="Oyin-Logo" className='max-w-full max-h-full object-contain object-center' />
               </div>
 
-              {/* Absolute positioning keeps this group centered in the full header, independent of side widths. */}
-              <nav className='hidden absolute left-1/2 -translate-x-1/2 text-mainColor text-lg lg:flex gap-[15px] whitespace-nowrap'>
+              {/* Center navigation - grid column 2 ensures true centering */}
+              <nav className='hidden text-mainColor text-lg lg:flex justify-center gap-[15px] whitespace-nowrap'>
                   {mainNavLinks.map((link) => (
                       <Link key={link.path} to={link.path} className={`nav-link ${location.pathname === link.path ? 'active' : ''}`}>{ link.label}</Link>
                   ))}
               </nav>
 
-              <nav className='hidden text-mainColor text-lg lg:flex gap-[15px] whitespace-nowrap'>
+              {/* Right-side authentication navigation */}
+              <nav className='hidden text-mainColor text-lg lg:flex justify-end gap-[15px] whitespace-nowrap'>
                   {authNavLinks.map((link) => (
                       <Link key={link.path} to={link.path} className={`nav-link ${location.pathname === link.path ? 'active' : ''}`}>{ link.label}</Link>
                   ))}
