@@ -4,6 +4,8 @@ import { Link, useLocation } from 'react-router-dom'
 // assets-images
 import Logo from '../../assets/images/OyinLogo.png'
 import { Album02Icon, Cancel01Icon, Home01Icon, Menu11Icon, ShoppingCart01Icon } from 'hugeicons-react'
+import { useSelector } from 'react-redux'
+import type { RootState } from '../../app/store'
 
 type NavLink = {
     label: string
@@ -14,6 +16,7 @@ type NavLink = {
 const Header: React.FC = () => {
     const [toggle, setToggle] = useState(false)
     const location = useLocation()
+    const cartCount = useSelector((state: RootState) => state.ordering.cart.reduce((count, item) => count + item.quantity, 0))
     const mainNavLinks: NavLink[] = [
         {
             label: 'Home',
@@ -21,14 +24,29 @@ const Header: React.FC = () => {
             icon: Home01Icon
         },
         {
+            label: 'Menu',
+            path: '/menu',
+            icon: ShoppingCart01Icon
+        },
+        {
             label: 'Order',
-            path: 'place-order',
+            path: '/place-order',
             icon: ShoppingCart01Icon
         },
         {
             label: 'Gallery',
             path: '/gallery',
             icon: Album02Icon
+        },
+        {
+            label: 'Cart',
+            path: '/cart',
+            icon: ShoppingCart01Icon
+        },
+        {
+            label: 'Orders',
+            path: '/orders',
+            icon: ShoppingCart01Icon
         }
     ]
     const authNavLinks: NavLink[] = [
@@ -53,15 +71,17 @@ const Header: React.FC = () => {
     }
   return (
       <section className='sticky top-0'>
-          <header className='relative max-w-[85%] z-[999] mx-auto grid grid-cols-[auto_1fr_auto] items-center sticky top-0'>
+          <header className='max-w-[85%] z-999 mx-auto grid grid-cols-[auto_1fr_auto] items-center sticky top-0'>
               <div className='w-[128px] h-[64px] lg:w-[160px] lg:h-[80px] flex items-center justify-center overflow-hidden'>
                 <img src={Logo} alt="Oyin-Logo" className='max-w-full max-h-full object-contain object-center' />
               </div>
 
               {/* Center navigation - grid column 2 ensures true centering */}
               <nav className='hidden text-mainColor text-lg lg:flex justify-center gap-[15px] whitespace-nowrap'>
-                  {mainNavLinks.map((link) => (
-                      <Link key={link.path} to={link.path} className={`nav-link ${location.pathname === link.path ? 'active' : ''}`}>{ link.label}</Link>
+                                    {mainNavLinks.map((link) => (
+                                            <Link key={link.path} to={link.path} className={`nav-link ${location.pathname === link.path || (link.path === '/menu' && location.pathname.startsWith('/menu/')) ? 'active' : ''}`}>
+                                                {link.label}{link.path === '/cart' && cartCount > 0 ? ` (${cartCount})` : ''}
+                                            </Link>
                   ))}
               </nav>
 
@@ -79,23 +99,23 @@ const Header: React.FC = () => {
               </div> */}
 
               {/* Mobile */}
-              <div onClick={handleToggleNav} className='block lg:hidden z-[999]'>
+              <button type='button' aria-label={toggle ? 'Close navigation' : 'Open navigation'} aria-expanded={toggle} aria-controls='mobile-navigation' onClick={handleToggleNav} className='col-start-3 block justify-self-end lg:hidden z-999 p-0 border-0 bg-transparent'>
                   {!toggle
                       ? <Menu11Icon size={24} className='text-mainColor' />
                       : <Cancel01Icon size={24} className='text-mainColor' />
                   }
-              </div>
+              </button>
 
-              <div className={`fixed bg-secondaryColor z-[999] w-screen h-[100vh] top-[14.7%] lg:hidden
+              <div id='mobile-navigation' inert={!toggle} className={`fixed bg-secondaryColor z-999 w-screen h-screen top-[14.7%] lg:hidden
                     ${toggle ? 'left-0 transition-all ease-in-out duration-1000'
-                      : 'left-[-100%] transition-all ease-in-out duration-500'}
+                      : '-left-full transition-all ease-in-out duration-500'}
                 `}>
                 
                 <nav className=' text-mainColor text-lg flex flex-col w-[85%] mx-auto mt-[30px]'>
                       {navLinks.map((link) => (
                         <div key={link.path} className='flex gap-[12px] mb-10' onClick={() => setToggle(false)}>
                             <link.icon size={24} />  
-                            <Link to={link.path}>{link.label}</Link>
+                            <Link to={link.path}>{link.label}{link.path === '/cart' && cartCount > 0 ? ` (${cartCount})` : ''}</Link>
                         </div>
                     ))}
                 </nav>

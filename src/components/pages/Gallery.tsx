@@ -24,7 +24,7 @@ const Gallery: React.FC = () => {
               <p className='text-[12px] text-slate-400 leading-[20px] mt-2 flex-1'>{item.des}</p>
               <div className='flex items-center justify-between gap-4 mt-5'>
                 <h3 className='text-lg text-primaryColor font-bold'>₦{item.price}</h3>
-                <button className='bg-primaryColor w-[100px] h-[35px] rounded-md text-mainColor text-[14px]' onClick={() => navigate('/place-order')}>Order</button>
+                <button className='bg-primaryColor w-[100px] h-[35px] rounded-md text-mainColor text-[14px]' onClick={() => navigate('/menu')}>Order</button>
               </div>
             </div>
           </article>

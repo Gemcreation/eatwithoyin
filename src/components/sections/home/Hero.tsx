@@ -26,23 +26,23 @@ const Hero: React.FC<HeroProps> = ({ title, subtitle, image }) => {
   })
   
   return (
-      <section className='mt-10 lg:mt-0 h-[90vh]'>
-          <div className='max-w-[85%] h-[80vh] mx-auto flex flex-col lg:flex-row gap-[20px] justify-between items-center'>
+        <section className='relative mt-8 min-h-[660px] overflow-hidden lg:mt-0 lg:h-[90vh] lg:min-h-0'>
+          <div className='max-w-[85%] min-h-[620px] mx-auto flex flex-col lg:h-[80vh] lg:min-h-0 lg:flex-row gap-[20px] justify-between items-center'>
               <div className='lg:w-[450px]'>
                   <h1 className='hero-header text-2xl lg:text-4xl text-primaryColor text-center lg:text-left font-bold leading-[50px]'>{title}</h1>
                   <p className='hero-paragraph mt-6 text-center lg:text-left text-[14px]'>{subtitle}</p>
 
                   <div className='hero-cta-btns mt-6 flex flex-row gap-[30px]'>
-                    <button className='bg-primaryColor text-mainColor w-[150px] h-[40px] rounded-md' onClick={() => navigate('/place-order')}>Order Food</button>
+                    <button className='bg-primaryColor text-mainColor w-[150px] h-[40px] rounded-md' onClick={() => navigate('/menu')}>Order Food</button>
                     {/* <button className='border border-primaryColor text-primaryColor w-[150px] h-[40px] rounded-md'>Download App</button> */}
                   </div>
               </div>
             <div className='lg:w-[500px] relative '>
               <div className='w-[250px] h-[250px] lg:w-[400px] lg:h-[300px]'>
-                    <img src={image} alt="image" className='rice-img w-[50px] h-[300px] lg:w-full lg:h-full object-cover scale-[140%]' />
+                    <img src={image} alt="image" className='rice-img w-full h-full object-contain' />
               </div>
-                    <img src={Coke} alt="image" className='drink1 absolute top-[50%] left-[-10%] translate-x-[-10%] w-[100px] h-[250px]' />
-                    <img src={Juice} alt="image" className={`drink2 absolute top-[-10%] left-[160%] lg:left-[90%] translate-x-[-160%] lg:translate-x-[-100%] w-[100px] h-[200px]`} />
+                    <img src={Coke} alt="image" className='drink1 absolute top-[-8%] left-0 translate-x-0 lg:top-[50%] lg:left-[-10%] lg:translate-x-[-10%] w-[100px] h-[250px]' />
+                    <img src={Juice} alt="image" className='drink2 absolute top-[-5%] left-[65%] -translate-x-full lg:top-[-10%] lg:left-[90%] lg:-translate-x-full w-[100px] h-[200px]' />
             </div>
           </div>
     </section>
