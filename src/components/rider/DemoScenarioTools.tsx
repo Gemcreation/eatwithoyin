@@ -3,11 +3,27 @@ import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import type { AppDispatch, RootState } from '../../app/store'
 import { resetDemoOrders, saveDemoOrder } from '../../features/ordering/orderingSlice'
+import type { OrderStatus } from '../../features/ordering/types'
 import { buildDemoOrder, findDemoOrder } from '../../features/rider/demoScenario'
 
 interface Feedback {
   kind: 'success' | 'error' | 'info'
   message: string
+}
+
+const walkthroughSteps = ['Customer', 'Kitchen', 'Rider', 'Customer'] as const
+
+const getActiveStep = (status: OrderStatus) => {
+  if (status === 'ORDER_PLACED') return 0
+  if (status === 'CONFIRMED' || status === 'PREPARING' || status === 'CANCELLED') return 1
+  if (status === 'DELIVERED') return 3
+  return 2
+}
+
+const getStepPath = (role: typeof walkthroughSteps[number], orderId: string) => {
+  if (role === 'Kitchen') return `/kitchen/orders/${orderId}`
+  if (role === 'Rider') return `/rider/deliveries/${orderId}`
+  return `/order/${orderId}`
 }
 
 const DemoScenarioTools = () => {
@@ -83,6 +99,40 @@ const DemoScenarioTools = () => {
           <button type="button" className="rider-secondary-button" disabled={processing} onClick={resetDemo}>{processing ? 'Resetting…' : 'Reset Demo'}</button>
         </div>
       )}
+
+      <section className="rider-demo-walkthrough" aria-labelledby="rider-walkthrough-heading">
+        <header className="rider-demo-walkthrough-header">
+          <div><h3 id="rider-walkthrough-heading">Demo walkthrough</h3><p>Follow one order through each role.</p></div>
+          {demoOrder && <span className="rider-demo-current-role">Current role <strong>{demoOrder.status === 'DELIVERED' ? 'Customer · complete' : walkthroughSteps[getActiveStep(demoOrder.status)]}</strong></span>}
+        </header>
+
+        {demoOrder ? (
+          <>
+            <div className="rider-demo-status-line">
+              <div><small>Demo order</small><strong>#{demoOrder.id}</strong></div>
+              <div><small>Current status</small><strong className="rider-demo-status-text">{demoOrder.status.replaceAll('_', ' ')}</strong></div>
+            </div>
+            <ol className="rider-demo-steps" aria-label="Demo order lifecycle">
+              {walkthroughSteps.map((role, index) => {
+                const activeStep = getActiveStep(demoOrder.status)
+                const complete = demoOrder.status === 'DELIVERED' || index < activeStep
+                const active = demoOrder.status !== 'DELIVERED' && index === activeStep
+                return (
+                  <li key={`${role}-${index}`} className={`rider-demo-step ${complete ? 'is-complete' : ''} ${active ? 'is-active' : ''}`}>
+                    <span className="rider-demo-step-marker" aria-hidden="true">{complete ? '✓' : active ? '●' : '○'}</span>
+                    <Link to={getStepPath(role, demoOrder.id)}>{role}</Link>
+                    {index < walkthroughSteps.length - 1 && <span className="rider-demo-step-arrow" aria-hidden="true">↓</span>}
+                  </li>
+                )
+              })}
+            </ol>
+            {demoOrder.status === 'DELIVERED' && <p className="rider-demo-complete-message">Demo complete. The order was delivered; open Customer to verify its final status.</p>}
+            {demoOrder.status === 'CANCELLED' && <p className="rider-demo-cancelled-message">This demo order was cancelled in Kitchen and cannot continue to Rider.</p>}
+          </>
+        ) : (
+          <div className="rider-demo-walkthrough-empty"><strong>No active demo order.</strong><p>Create a demo order above to preview Customer → Kitchen → Rider → Customer.</p></div>
+        )}
+      </section>
 
       <p className="rider-demo-reset-note">Reset removes only the demo order. Customer-created orders are not changed.</p>
       {feedback && <p className={`rider-demo-feedback is-${feedback.kind}`} role={feedback.kind === 'error' ? 'alert' : 'status'}>{feedback.message}</p>}

@@ -26,6 +26,7 @@ const OrderTimeline = ({ status }: OrderTimelineProps) => {
     )
   }
 
+  const riderIsAssigned = ['RIDER_ASSIGNED', 'PICKED_UP', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(status)
   const activeIndex = milestones.findIndex((milestone) => milestone.status === status)
 
   return (
@@ -44,7 +45,7 @@ const OrderTimeline = ({ status }: OrderTimelineProps) => {
           )
         })}
       </ol>
-      <p className="prototype-note">Prototype status only. Progress updates are not live, and no rider has been assigned.</p>
+      <p className="prototype-note">{riderIsAssigned ? 'Rider assignment and delivery progress are simulated locally; location updates are not live.' : 'Prototype status only. Progress updates are not live, and no rider has been assigned.'}</p>
     </section>
   )
 }
