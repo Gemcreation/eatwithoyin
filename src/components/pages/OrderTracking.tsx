@@ -51,6 +51,13 @@ const OrderTracking = () => {
             <p>{order.deliveryAddress.city}</p>
             <p>{order.customer.phone}</p>
           </div>
+          {order.rider && (
+            <div className="delivery-address-block">
+              <h3>Delivery rider</h3>
+              <p>{order.rider.name} · {order.rider.id}</p>
+              <p>{order.rider.phone}</p>
+            </div>
+          )}
           <p className="payment-hint">{order.paymentMethod}</p>
         </aside>
       </div>

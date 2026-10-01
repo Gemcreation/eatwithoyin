@@ -6,7 +6,19 @@ import rice from '../../assets/images/oyin-rice.png'
 import yamEgg from '../../assets/images/yamegg.jpg'
 import jollofRice from '../../assets/images/item-rice.png'
 
-import type { Food, FoodCategory } from './types'
+import type { Food, FoodCategory, KitchenSettings } from './types'
+import { DELIVERY_FEE } from './utils'
+
+export const defaultKitchenSettings: KitchenSettings = {
+  name: "Oyin's Kitchen",
+  phone: '+234 903 772 1921',
+  address: 'Lagos, Nigeria',
+  openingTime: '09:00',
+  closingTime: '21:00',
+  isOpen: true,
+  deliveryAvailable: true,
+  deliveryFee: DELIVERY_FEE,
+}
 
 export const foods: Food[] = [
   {

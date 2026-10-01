@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft01Icon } from 'hugeicons-react'
-import { useDispatch } from 'react-redux'
-import type { AppDispatch } from '../../app/store'
-import { foods } from '../../features/ordering/data'
+import { useDispatch, useSelector } from 'react-redux'
+import type { AppDispatch, RootState } from '../../app/store'
 import { addToCart } from '../../features/ordering/orderingSlice'
 import { formatNaira } from '../../features/ordering/utils'
 import QuantitySelector from '../ordering/QuantitySelector'
@@ -12,6 +11,7 @@ const FoodDetails = () => {
   const { id } = useParams()
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
+  const foods = useSelector((state: RootState) => state.ordering.foods)
   const food = foods.find((item) => item.id === id)
   const [quantity, setQuantity] = useState(1)
 

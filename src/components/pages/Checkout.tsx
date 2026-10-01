@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import type { AppDispatch, RootState } from '../../app/store'
 import { clearCart, saveOrder } from '../../features/ordering/orderingSlice'
-import { DELIVERY_FEE, formatNaira } from '../../features/ordering/utils'
+import { formatNaira } from '../../features/ordering/utils'
 import type { CustomerOrder } from '../../features/ordering/types'
 
 interface CheckoutFields {
@@ -21,7 +21,8 @@ const emptyFields: CheckoutFields = { fullName: '', phone: '', address: '', land
 const Checkout = () => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
-  const { cart, orders } = useSelector((state: RootState) => state.ordering)
+  const { cart, orders, kitchenSettings } = useSelector((state: RootState) => state.ordering)
+  const deliveryFee = kitchenSettings.deliveryFee
   const [fields, setFields] = useState(emptyFields)
   const [errors, setErrors] = useState<CheckoutErrors>({})
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
@@ -58,8 +59,8 @@ const Checkout = () => {
       },
       items: cart.map((item) => ({ ...item })),
       subtotal,
-      deliveryFee: DELIVERY_FEE,
-      total: subtotal + DELIVERY_FEE,
+      deliveryFee,
+      total: subtotal + deliveryFee,
       paymentMethod: 'Cash on delivery',
       status: 'ORDER_PLACED',
       createdAt: new Date().toISOString(),
@@ -131,7 +132,7 @@ const Checkout = () => {
               <span><strong>Cash on delivery</strong><small>Pay when your order arrives</small></span>
             </label>
           </section>
-          <button type="submit" className="button-primary full-button">Place order · {formatNaira(subtotal + DELIVERY_FEE)}</button>
+          <button type="submit" className="button-primary full-button">Place order · {formatNaira(subtotal + deliveryFee)}</button>
         </form>
 
         <aside className="checkout-order-summary">
@@ -146,8 +147,8 @@ const Checkout = () => {
             ))}
           </div>
           <div className="summary-line"><span>Subtotal</span><strong>{formatNaira(subtotal)}</strong></div>
-          <div className="summary-line"><span>Delivery fee</span><strong>{formatNaira(DELIVERY_FEE)}</strong></div>
-          <div className="summary-total"><span>Total</span><strong>{formatNaira(subtotal + DELIVERY_FEE)}</strong></div>
+          <div className="summary-line"><span>Delivery fee</span><strong>{formatNaira(deliveryFee)}</strong></div>
+          <div className="summary-total"><span>Total</span><strong>{formatNaira(subtotal + deliveryFee)}</strong></div>
         </aside>
       </div>
     </main>

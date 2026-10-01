@@ -1,14 +1,15 @@
 import { useState } from 'react'
 import { Search01Icon } from 'hugeicons-react'
-import { useDispatch } from 'react-redux'
-import type { AppDispatch } from '../../app/store'
+import { useDispatch, useSelector } from 'react-redux'
+import type { AppDispatch, RootState } from '../../app/store'
 import FoodCard from '../ordering/FoodCard'
-import { foods, foodCategories } from '../../features/ordering/data'
+import { foodCategories } from '../../features/ordering/data'
 import { addToCart } from '../../features/ordering/orderingSlice'
 import type { Food, FoodCategory } from '../../features/ordering/types'
 
 const Menu = () => {
   const dispatch = useDispatch<AppDispatch>()
+  const foods = useSelector((state: RootState) => state.ordering.foods)
   const [category, setCategory] = useState<'All' | FoodCategory>('All')
   const [search, setSearch] = useState('')
   const filteredFoods = foods.filter((food) => {

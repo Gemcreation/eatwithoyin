@@ -10,10 +10,13 @@ export const store = configureStore({
 })
 
 store.subscribe(() => {
-    const { cart, orders } = store.getState().ordering
+    const { cart, orders, foods, kitchenSettings, riderOnline } = store.getState().ordering
     try {
         localStorage.setItem('ew-customer-cart', JSON.stringify(cart))
         localStorage.setItem('ew-customer-orders', JSON.stringify(orders))
+        localStorage.setItem('ew-menu-foods', JSON.stringify(foods))
+        localStorage.setItem('ew-kitchen-settings', JSON.stringify(kitchenSettings))
+        localStorage.setItem('ew-rider-online', String(riderOnline))
     } catch {
         // The ordering flow remains usable if browser storage is unavailable.
     }

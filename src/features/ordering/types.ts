@@ -18,9 +18,19 @@ export interface CartItem {
   quantity: number
 }
 
+export type OrderItem = CartItem
+
 export interface Customer {
   fullName: string
   phone: string
+}
+
+export interface Rider {
+  id: string
+  name: string
+  phone: string
+  vehicleType: string
+  vehicleRegistration: string
 }
 
 export interface DeliveryAddress {
@@ -38,6 +48,7 @@ export type OrderStatus =
   | 'PICKED_UP'
   | 'OUT_FOR_DELIVERY'
   | 'DELIVERED'
+  | 'CANCELLED'
 
 export type PaymentMethod = 'Cash on delivery'
 
@@ -52,4 +63,16 @@ export interface CustomerOrder {
   paymentMethod: PaymentMethod
   status: OrderStatus
   createdAt: string
+  rider?: Rider
+}
+
+export interface KitchenSettings {
+  name: string
+  phone: string
+  address: string
+  openingTime: string
+  closingTime: string
+  isOpen: boolean
+  deliveryAvailable: boolean
+  deliveryFee: number
 }

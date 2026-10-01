@@ -9,7 +9,7 @@ import QuantitySelector from '../ordering/QuantitySelector'
 
 const Cart = () => {
   const dispatch = useDispatch<AppDispatch>()
-  const items = useSelector((state: RootState) => state.ordering.cart)
+  const { cart: items, kitchenSettings } = useSelector((state: RootState) => state.ordering)
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
   return (
@@ -43,7 +43,7 @@ const Cart = () => {
             ))}
             <Link to="/menu" className="text-link continue-shopping">Continue shopping</Link>
           </section>
-          <CartSummary subtotal={subtotal} buttonLabel="Proceed to checkout" to="/checkout" />
+          <CartSummary subtotal={subtotal} buttonLabel="Proceed to checkout" to="/checkout" deliveryFee={kitchenSettings.deliveryFee} />
         </div>
       )}
     </main>

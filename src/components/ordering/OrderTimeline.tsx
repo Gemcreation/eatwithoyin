@@ -6,8 +6,8 @@ const milestones: Array<{ status: OrderStatus; label: string }> = [
   { status: 'CONFIRMED', label: 'Kitchen confirmed' },
   { status: 'PREPARING', label: 'Preparing your food' },
   { status: 'READY_FOR_PICKUP', label: 'Ready for pickup' },
-  { status: 'RIDER_ASSIGNED', label: 'Rider assignment' },
-  { status: 'PICKED_UP', label: 'Picked up' },
+  { status: 'RIDER_ASSIGNED', label: 'Rider assigned' },
+  { status: 'PICKED_UP', label: 'Order picked up' },
   { status: 'OUT_FOR_DELIVERY', label: 'Out for delivery' },
   { status: 'DELIVERED', label: 'Delivered' },
 ]
@@ -17,6 +17,15 @@ interface OrderTimelineProps {
 }
 
 const OrderTimeline = ({ status }: OrderTimelineProps) => {
+  if (status === 'CANCELLED') {
+    return (
+      <section className="timeline-panel">
+        <h2>Order cancelled</h2>
+        <p className="prototype-note">This mock order was declined by the kitchen.</p>
+      </section>
+    )
+  }
+
   const activeIndex = milestones.findIndex((milestone) => milestone.status === status)
 
   return (

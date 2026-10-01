@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import type { CartItem, CustomerOrder } from './types'
+import { defaultKitchenSettings, foods as defaultFoods } from './data'
+import type { CartItem, CustomerOrder, Food, KitchenSettings, OrderStatus, Rider } from './types'
 
 const readStoredArray = <T,>(key: string): T[] => {
   try {
@@ -13,11 +14,37 @@ const readStoredArray = <T,>(key: string): T[] => {
 interface OrderingState {
   cart: CartItem[]
   orders: CustomerOrder[]
+  foods: Food[]
+  kitchenSettings: KitchenSettings
+  riderOnline: boolean
 }
+
+const readStoredObject = <T,>(key: string, fallback: T): T => {
+  try {
+    const value: unknown = JSON.parse(localStorage.getItem(key) ?? 'null')
+    return value && typeof value === 'object' ? { ...fallback, ...value } : fallback
+  } catch {
+    return fallback
+  }
+}
+
+const readStoredBoolean = (key: string, fallback: boolean) => {
+  try {
+    const value = localStorage.getItem(key)
+    return value === null ? fallback : value === 'true'
+  } catch {
+    return fallback
+  }
+}
+
+const storedFoods = readStoredArray<Food>('ew-menu-foods')
 
 const initialState: OrderingState = {
   cart: readStoredArray<CartItem>('ew-customer-cart'),
   orders: readStoredArray<CustomerOrder>('ew-customer-orders'),
+  foods: storedFoods.length > 0 ? storedFoods : defaultFoods,
+  kitchenSettings: readStoredObject<KitchenSettings>('ew-kitchen-settings', defaultKitchenSettings),
+  riderOnline: readStoredBoolean('ew-rider-online', true),
 }
 
 const orderingSlice = createSlice({
@@ -42,8 +69,49 @@ const orderingSlice = createSlice({
     saveOrder: (state, action: PayloadAction<CustomerOrder>) => {
       state.orders.unshift(action.payload)
     },
+    setOrderStatus: (state, action: PayloadAction<{ orderId: string; status: OrderStatus }>) => {
+      const order = state.orders.find((item) => item.id === action.payload.orderId)
+      if (order) order.status = action.payload.status
+    },
+    assignRiderToOrder: (state, action: PayloadAction<{ orderId: string; rider: Rider }>) => {
+      const order = state.orders.find((item) => item.id === action.payload.orderId)
+      if (order?.status === 'READY_FOR_PICKUP') {
+        order.rider = action.payload.rider
+        order.status = 'RIDER_ASSIGNED'
+      }
+    },
+    setRiderOnline: (state, action: PayloadAction<boolean>) => {
+      state.riderOnline = action.payload
+    },
+    addFood: (state, action: PayloadAction<Food>) => {
+      state.foods.unshift(action.payload)
+    },
+    updateFood: (state, action: PayloadAction<Food>) => {
+      const index = state.foods.findIndex((food) => food.id === action.payload.id)
+      if (index !== -1) state.foods[index] = action.payload
+    },
+    toggleFoodAvailability: (state, action: PayloadAction<string>) => {
+      const food = state.foods.find((item) => item.id === action.payload)
+      if (food) food.available = !food.available
+    },
+    updateKitchenSettings: (state, action: PayloadAction<KitchenSettings>) => {
+      state.kitchenSettings = action.payload
+    },
   },
 })
 
-export const { addToCart, setCartQuantity, removeFromCart, clearCart, saveOrder } = orderingSlice.actions
+export const {
+  addToCart,
+  setCartQuantity,
+  removeFromCart,
+  clearCart,
+  saveOrder,
+  setOrderStatus,
+  assignRiderToOrder,
+  setRiderOnline,
+  addFood,
+  updateFood,
+  toggleFoodAvailability,
+  updateKitchenSettings,
+} = orderingSlice.actions
 export default orderingSlice.reducer
