@@ -69,6 +69,13 @@ const orderingSlice = createSlice({
     saveOrder: (state, action: PayloadAction<CustomerOrder>) => {
       state.orders.unshift(action.payload)
     },
+    saveDemoOrder: (state, action: PayloadAction<CustomerOrder>) => {
+      const existingDemoOrder = state.orders.some((order) => order.isDemo)
+      if (action.payload.isDemo && !existingDemoOrder) state.orders.unshift(action.payload)
+    },
+    resetDemoOrders: (state) => {
+      state.orders = state.orders.filter((order) => !order.isDemo)
+    },
     setOrderStatus: (state, action: PayloadAction<{ orderId: string; status: OrderStatus }>) => {
       const order = state.orders.find((item) => item.id === action.payload.orderId)
       if (order) order.status = action.payload.status
@@ -106,6 +113,8 @@ export const {
   removeFromCart,
   clearCart,
   saveOrder,
+  saveDemoOrder,
+  resetDemoOrders,
   setOrderStatus,
   assignRiderToOrder,
   setRiderOnline,

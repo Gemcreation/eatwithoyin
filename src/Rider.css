@@ -361,6 +361,111 @@
   background: #fff;
 }
 
+.rider-demo-tools {
+  margin: 16px 0 25px;
+  padding: 15px 16px;
+  border: 1px solid #dce5df;
+  border-radius: 5px;
+  background: #fff;
+}
+
+.rider-demo-tools-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rider-demo-tools-header .rider-eyebrow {
+  margin-bottom: 5px;
+}
+
+.rider-demo-tools-header h2 {
+  margin: 0 0 4px;
+  font-size: 14px;
+}
+
+.rider-demo-tools-header p:last-child,
+.rider-demo-existing > p {
+  margin: 0;
+  color: var(--rider-muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.rider-demo-order-tag {
+  padding: 6px 8px;
+  border-radius: 3px;
+  background: #eaf2ee;
+  color: var(--rider-green);
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.rider-demo-tools-actions,
+.rider-demo-order-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.rider-secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--rider-line);
+  border-radius: 4px;
+  background: #fff;
+  color: #4e5952;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.rider-secondary-button:disabled {
+  color: #9ca29d;
+  cursor: not-allowed;
+}
+
+.rider-demo-existing {
+  margin-top: 12px;
+}
+
+.rider-demo-order-links {
+  margin: 10px 0;
+}
+
+.rider-demo-order-links a {
+  color: var(--rider-green);
+  font-size: 10px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.rider-demo-reset-note {
+  margin: 9px 0 0;
+  color: var(--rider-muted);
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.rider-demo-feedback {
+  margin: 10px 0 0;
+  padding: 9px 10px;
+  border-radius: 3px;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.rider-demo-feedback.is-success { background: #eaf2ee; color: #195b45; }
+.rider-demo-feedback.is-info { background: #edf1f6; color: #405c82; }
+.rider-demo-feedback.is-error { background: #f8eae7; color: #923d32; }
+
 .rider-availability-copy {
   display: flex;
   align-items: center;
@@ -1126,6 +1231,15 @@
 
   .rider-availability-card {
     padding: 12px;
+  }
+
+  .rider-demo-tools-header {
+    flex-direction: column;
+  }
+
+  .rider-demo-tools-actions > button,
+  .rider-demo-existing > .rider-secondary-button {
+    flex: 1 1 130px;
   }
 
   .rider-delivery-card {

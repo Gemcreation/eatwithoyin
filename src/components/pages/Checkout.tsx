@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import type { AppDispatch, RootState } from '../../app/store'
 import { clearCart, saveOrder } from '../../features/ordering/orderingSlice'
-import { formatNaira } from '../../features/ordering/utils'
+import { calculateSubtotal, createNextOrderId, formatNaira } from '../../features/ordering/utils'
 import type { CustomerOrder } from '../../features/ordering/types'
 
 interface CheckoutFields {
@@ -25,7 +25,7 @@ const Checkout = () => {
   const deliveryFee = kitchenSettings.deliveryFee
   const [fields, setFields] = useState(emptyFields)
   const [errors, setErrors] = useState<CheckoutErrors>({})
-  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const subtotal = calculateSubtotal(cart)
 
   const updateField = (field: keyof CheckoutFields, value: string) => {
     setFields((current) => ({ ...current, [field]: value }))
@@ -45,12 +45,8 @@ const Checkout = () => {
     setErrors(nextErrors)
     if (Object.keys(nextErrors).length > 0) return
 
-    const previousSequence = orders.reduce((highest, order) => {
-      const sequence = Number(order.id.replace('EW-', ''))
-      return Number.isFinite(sequence) ? Math.max(highest, sequence) : highest
-    }, 1023)
     const order: CustomerOrder = {
-      id: `EW-${previousSequence + 1}`,
+      id: createNextOrderId(orders),
       customer: { fullName: fields.fullName.trim(), phone: fields.phone.trim() },
       deliveryAddress: {
         address: fields.address.trim(),

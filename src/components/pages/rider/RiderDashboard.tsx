@@ -5,6 +5,7 @@ import { getActiveDeliveries, getAvailableDeliveries, getCompletedDeliveriesToda
 import { formatNaira } from '../../../features/ordering/utils'
 import ActiveDeliveryCard from '../../rider/ActiveDeliveryCard'
 import DeliveryCard from '../../rider/DeliveryCard'
+import DemoScenarioTools from '../../rider/DemoScenarioTools'
 import RiderAvailabilityToggle from '../../rider/RiderAvailabilityToggle'
 
 const RiderDashboard = () => {
@@ -27,6 +28,7 @@ const RiderDashboard = () => {
         {metrics.map((metric) => <article key={metric.label} className={`rider-stat-card ${'money' in metric && metric.money ? 'earnings-stat' : ''}`}><span>{metric.label}</span><strong>{metric.value}</strong></article>)}
       </section>
       <RiderAvailabilityToggle />
+      <DemoScenarioTools />
 
       {active.length > 0 && (
         <section className="rider-section">

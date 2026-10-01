@@ -64,6 +64,7 @@ export interface CustomerOrder {
   status: OrderStatus
   createdAt: string
   rider?: Rider
+  isDemo?: boolean
 }
 
 export interface KitchenSettings {
