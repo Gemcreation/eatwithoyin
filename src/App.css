@@ -24,14 +24,6 @@ p {
     @apply h-[600px] overflow-y-scroll border p-4 rounded-md
 } */
 
-.checkList {
-    @apply overflow-y-scroll h-[300px]
-}
-
- .checkList::-webkit-scrollbar {
-    @apply rounded w-[5px]
-}
-
 :root {
     --ordering-green: #00594f;
     --ordering-ivory: #f4f1eb;

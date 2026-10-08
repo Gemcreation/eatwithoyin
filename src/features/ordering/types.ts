@@ -1,4 +1,4 @@
-export type FoodCategory = 'Rice' | 'Chicken' | 'Local Dishes' | 'Drinks' | 'Snacks'
+export type FoodCategory = 'Rice' | 'Chicken' | 'Local Dishes' | 'Extras' | 'Drinks' | 'Snacks'
 
 export interface Food {
   id: string

@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import { defaultKitchenSettings, foods as defaultFoods } from './data'
+import { defaultFoods, defaultKitchenSettings } from './data'
 import type { CartItem, CustomerOrder, Food, KitchenSettings, OrderStatus, Rider } from './types'
 
 const readStoredArray = <T,>(key: string): T[] => {
@@ -38,11 +38,13 @@ const readStoredBoolean = (key: string, fallback: boolean) => {
 }
 
 const storedFoods = readStoredArray<Food>('ew-menu-foods')
+const foodsById = new Map(defaultFoods.map((food) => [food.id, food]))
+storedFoods.forEach((food) => foodsById.set(food.id, food))
 
 const initialState: OrderingState = {
   cart: readStoredArray<CartItem>('ew-customer-cart'),
   orders: readStoredArray<CustomerOrder>('ew-customer-orders'),
-  foods: storedFoods.length > 0 ? storedFoods : defaultFoods,
+  foods: [...foodsById.values()],
   kitchenSettings: readStoredObject<KitchenSettings>('ew-kitchen-settings', defaultKitchenSettings),
   riderOnline: readStoredBoolean('ew-rider-online', true),
 }

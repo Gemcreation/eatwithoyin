@@ -29,11 +29,6 @@ const Header: React.FC = () => {
             icon: ShoppingCart01Icon
         },
         {
-            label: 'Order',
-            path: '/place-order',
-            icon: ShoppingCart01Icon
-        },
-        {
             label: 'Gallery',
             path: '/gallery',
             icon: Album02Icon

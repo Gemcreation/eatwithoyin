@@ -1,10 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import checkListReducer from "../features/checkList";
 import orderingReducer from "../features/ordering/orderingSlice";
 
 export const store = configureStore({
     reducer: {
-        checkList: checkListReducer,
         ordering: orderingReducer,
     }
 })

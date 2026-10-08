@@ -16,7 +16,7 @@ const About: React.FC<AboutProps> = ({ image, heading, about }) => {
                     <h1 className='text-2xl lg:text-4xl font-bold'>{heading.split(' ')[0]} <span className='text-primaryColor'>{heading.split(' ')[1] }</span></h1>
                     <p className='text-[12px] mt-5'>{about}</p>
                     <div className='mt-5'>
-                        <button className='bg-primaryColor w-[150px] h-[40px] rounded-md' onClick={() => navigate('/place-order')}>Order food                            
+                        <button className='bg-primaryColor w-[150px] h-[40px] rounded-md' onClick={() => navigate('/menu')}>Order food
                         </button>
                     </div>
                 </div>

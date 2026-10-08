@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import './App.css'
 import { Route, Routes, useLocation } from 'react-router-dom'
 
@@ -8,11 +7,9 @@ import Footer from './components/layouts/Footer'
 
 // Components
 import Home from './components/pages/Home'
-import Order from './components/pages/Order'
 import Gallery from './components/pages/Gallery'
 import Login from './components/pages/Login'
 import SignUp from './components/pages/SignUp'
-import CheckLists from './components/layouts/CheckLists'
 import Menu from './components/pages/Menu'
 import FoodDetails from './components/pages/FoodDetails'
 import Cart from './components/pages/Cart'
@@ -34,20 +31,11 @@ import RiderHistory from './components/pages/rider/RiderHistory'
 import RiderProfile from './components/pages/rider/RiderProfile'
 
 function App() {
-  const [checkListSwitch, setCheckListSwitch] = useState(false)
   const location = useLocation()
   const isKitchenRoute = location.pathname.startsWith('/kitchen')
   const isRiderRoute = location.pathname.startsWith('/rider')
   const isOperationsRoute = isKitchenRoute || isRiderRoute
   
-  const openCheckList = () => {
-        setCheckListSwitch(true)
-    }
-
-    const closeCheckList = () => {
-        setCheckListSwitch(false)
-    }
-
   return (
     <>
       {!isOperationsRoute && (
@@ -79,7 +67,6 @@ function App() {
         <Route path='checkout' element={<Checkout />} />
         <Route path='order/:id' element={<OrderTracking />} />
         <Route path='orders' element={<Orders />} />
-        <Route path='place-order' element={<Order checkListFunction={openCheckList} />} />
         <Route path='gallery' element={<Gallery />} />
         {/* UI-only authentication routes; backend integration is intentionally deferred. */}
         <Route path='login' element={<Login />} />
@@ -87,11 +74,6 @@ function App() {
       </Routes>
       {!isOperationsRoute && <Footer />}
 
-      {!isOperationsRoute && (
-        <aside className={`bg-mainColor w-full lg:w-[450px] h-screen fixed top-0 z-1000 transition-all duration-1000 ease-in-out ${checkListSwitch ? 'right-0' : ' -right-full'}`}>
-            {checkListSwitch && <CheckLists closeCheckList={closeCheckList} />}
-        </aside>
-      )}
     </>
   )
 }

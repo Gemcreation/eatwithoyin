@@ -5,9 +5,29 @@ import moiMoi from '../../assets/images/moimoi.jpg'
 import rice from '../../assets/images/oyin-rice.png'
 import yamEgg from '../../assets/images/yamegg.jpg'
 import jollofRice from '../../assets/images/item-rice.png'
+import { items as legacyOrderItems } from '../../api'
 
 import type { Food, FoodCategory, KitchenSettings } from './types'
 import { DELIVERY_FEE } from './utils'
+
+const legacyCategories: FoodCategory[][] = [
+  ['Rice', 'Rice', 'Rice', 'Rice', 'Rice', 'Local Dishes', 'Local Dishes', 'Local Dishes', 'Local Dishes', 'Local Dishes'],
+  Array<FoodCategory>(8).fill('Extras'),
+  Array<FoodCategory>(10).fill('Drinks'),
+  Array<FoodCategory>(3).fill('Snacks'),
+]
+
+const legacyFoods: Food[] = legacyOrderItems.flatMap((categoryItems, categoryIndex) =>
+  categoryItems.map((item, itemIndex) => ({
+    id: `legacy-${categoryIndex}-${item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${itemIndex}`,
+    name: item.name,
+    description: item.des,
+    price: Number(item.price),
+    image: item.image,
+    category: legacyCategories[categoryIndex][itemIndex],
+    available: true,
+  })),
+)
 
 export const defaultKitchenSettings: KitchenSettings = {
   name: "Oyin's Kitchen",
@@ -127,6 +147,9 @@ export const foodCategories: Array<'All' | FoodCategory> = [
   'Rice',
   'Chicken',
   'Local Dishes',
+  'Extras',
   'Drinks',
   'Snacks',
 ]
+
+export const defaultFoods: Food[] = [...foods, ...legacyFoods]
