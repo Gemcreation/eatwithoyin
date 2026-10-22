@@ -28,9 +28,9 @@ const Testimonial: React.FC<TestimonialProps> = ({ reviews }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  useEffect(() => {
-  setCurrentSlide((current) => Math.min(current, maxSlide));
-}, [maxSlide]);
+//   useEffect(() => {
+//   setCurrentSlide((current) => Math.min(current, maxSlide));
+// }, [maxSlide]);
 
   const handlePrev = () => {
     setCurrentSlide((prevSlide) =>
