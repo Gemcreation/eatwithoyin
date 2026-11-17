@@ -66,7 +66,7 @@ const Header: React.FC = () => {
     }
   return (
       <section className='sticky top-0'>
-          <header className='max-w-[85%] z-999 mx-auto grid grid-cols-[auto_1fr_auto] items-center sticky top-0'>
+          <header className='relative max-w-[85%] z-999 mx-auto grid grid-cols-[auto_1fr_auto] items-center sticky top-0'>
               <div className='w-[128px] h-[64px] lg:w-[160px] lg:h-[80px] flex items-center justify-center overflow-hidden'>
                 <img src={Logo} alt="Oyin-Logo" className='max-w-full max-h-full object-contain object-center' />
               </div>
@@ -94,21 +94,21 @@ const Header: React.FC = () => {
               </div> */}
 
               {/* Mobile */}
-              <button type='button' aria-label={toggle ? 'Close navigation' : 'Open navigation'} aria-expanded={toggle} aria-controls='mobile-navigation' onClick={handleToggleNav} className='col-start-3 block justify-self-end lg:hidden z-999 p-0 border-0 bg-transparent'>
+              <button type='button' aria-label={toggle ? 'Close navigation' : 'Open navigation'} aria-expanded={toggle} aria-controls='mobile-navigation' onClick={handleToggleNav} className='col-start-3 grid h-11 w-11 place-items-center justify-self-end lg:hidden z-999 border-0 bg-transparent'>
                   {!toggle
                       ? <Menu11Icon size={24} className='text-mainColor' />
                       : <Cancel01Icon size={24} className='text-mainColor' />
                   }
               </button>
 
-              <div id='mobile-navigation' inert={!toggle} className={`fixed bg-secondaryColor z-999 w-screen h-screen top-[14.7%] lg:hidden
-                    ${toggle ? 'left-0 transition-all ease-in-out duration-1000'
-                      : '-left-full transition-all ease-in-out duration-500'}
+              <div id='mobile-navigation' inert={!toggle} className={`absolute top-full left-[-8.8235%] bg-secondaryColor z-999 w-[117.647%] max-h-[calc(100dvh-64px)] overflow-y-auto overscroll-contain lg:hidden transition-transform ease-in-out duration-500
+                    ${toggle ? 'translate-x-0'
+                      : '-translate-x-full'}
                 `}>
                 
-                <nav className=' text-mainColor text-lg flex flex-col w-[85%] mx-auto mt-[30px]'>
+                <nav className='text-mainColor text-lg flex flex-col w-[85%] mx-auto mt-[30px]'>
                       {navLinks.map((link) => (
-                        <div key={link.path} className='flex gap-[12px] mb-10' onClick={() => setToggle(false)}>
+                        <div key={link.path} className='flex min-h-11 items-center gap-[12px] mb-4' onClick={() => setToggle(false)}>
                             <link.icon size={24} />  
                             <Link to={link.path}>{link.label}{link.path === '/cart' && cartCount > 0 ? ` (${cartCount})` : ''}</Link>
                         </div>

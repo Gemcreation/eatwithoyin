@@ -63,6 +63,7 @@ export interface CustomerOrder {
   paymentMethod: PaymentMethod
   status: OrderStatus
   createdAt: string
+  updatedAt?: string
   rider?: Rider
   isDemo?: boolean
 }

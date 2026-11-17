@@ -281,7 +281,7 @@ p {
 }
 
 .compact-button {
-    min-height: 36px;
+    min-height: 44px;
     padding: 0 12px;
 }
 
@@ -382,8 +382,8 @@ p {
 .quantity-control button {
     display: grid;
     place-items: center;
-    width: 40px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
     color: var(--ordering-green);
 }
 
@@ -447,8 +447,8 @@ p {
 .icon-button {
     display: grid;
     place-items: center;
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
     border-radius: 4px;
     color: #8a3727;
 }
@@ -861,7 +861,7 @@ p {
     }
 
     .cart-item {
-        grid-template-columns: 68px minmax(0, 1fr) 34px;
+        grid-template-columns: 68px minmax(0, 1fr) 44px;
         gap: 12px;
     }
 

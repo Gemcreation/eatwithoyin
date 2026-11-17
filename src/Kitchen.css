@@ -7,6 +7,7 @@
   --kitchen-muted: #737873;
   --kitchen-line: #e2e4df;
   min-height: 100vh;
+  overflow-x: clip;
   background: #f6f7f4;
   color: var(--kitchen-ink);
 }
@@ -242,7 +243,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 39px;
+  min-height: 44px;
   padding: 0 14px;
   border: 1px solid var(--kitchen-green);
   border-radius: 4px;
@@ -273,7 +274,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 36px;
+  min-height: 44px;
   padding: 0 12px;
   border: 1px solid var(--kitchen-line);
   border-radius: 4px;
@@ -471,12 +472,13 @@
 }
 
 .kitchen-order-actions .kitchen-action-button {
-  min-height: 33px;
+  min-height: 44px;
   padding: 0 10px;
   font-size: 11px;
 }
 
 .kitchen-text-action {
+  min-height: 44px;
   padding: 5px 2px;
   background: transparent;
 }
@@ -493,6 +495,9 @@
 }
 
 .kitchen-view-link {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
   padding: 5px 2px;
 }
 
@@ -541,7 +546,7 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  min-height: 42px;
+  min-height: 44px;
   padding: 0 10px;
   border-bottom: 2px solid transparent;
   color: #626a64;
@@ -1080,6 +1085,10 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .kitchen-details-layout {
+    grid-template-columns: 1fr;
+  }
+
   .kitchen-main {
     padding-right: 24px;
     padding-left: 24px;
@@ -1118,8 +1127,8 @@
   .kitchen-mobile-menu {
     display: grid;
     place-items: center;
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     border: 0;
     border-radius: 4px;
     background: transparent;

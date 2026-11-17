@@ -23,7 +23,7 @@ const Whychooseus: React.FC<WhyChooseUsProps> = ({ reasons }) => {
                                 <img src={reason.image.src} alt={reason.image.alt} className='rounded-xl w-full h-full' />
                             </div>
                             <div className='wcu-content flex flex-col justify-center'>
-                                <h3 className='text-lg lg:text-xl font-bold h-[40px] mt-5'>{reason.subtitle}</h3>
+                                <h3 className='text-lg lg:text-xl font-bold mt-5'>{reason.subtitle}</h3>
                                 <p className='mt-3 text-[13px]'>{reason.paragraph}</p>
                             </div>
                         </div>

@@ -1,8 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import type { AppDispatch, RootState } from '../../app/store'
-import { clearCart, saveOrder } from '../../features/ordering/orderingSlice'
+import { isOrderPersisted, store, type AppDispatch, type RootState } from '../../app/store'
+import { clearCart, removeUnpersistedOrder, saveOrder } from '../../features/ordering/orderingSlice'
 import { calculateSubtotal, createNextOrderId, formatNaira } from '../../features/ordering/utils'
 import type { CustomerOrder } from '../../features/ordering/types'
 
@@ -25,6 +25,7 @@ const Checkout = () => {
   const deliveryFee = kitchenSettings.deliveryFee
   const [fields, setFields] = useState(emptyFields)
   const [errors, setErrors] = useState<CheckoutErrors>({})
+  const [submissionError, setSubmissionError] = useState('')
   const subtotal = calculateSubtotal(cart)
 
   const updateField = (field: keyof CheckoutFields, value: string) => {
@@ -34,6 +35,7 @@ const Checkout = () => {
 
   const placeOrder = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    setSubmissionError('')
     if (cart.length === 0) return
 
     const nextErrors: CheckoutErrors = {}
@@ -63,6 +65,19 @@ const Checkout = () => {
     }
 
     dispatch(saveOrder(order))
+    const savedInState = store.getState().ordering.orders.some(
+      (savedOrder) => JSON.stringify(savedOrder) === JSON.stringify(order),
+    )
+    if (!savedInState || !isOrderPersisted(order)) {
+      if (savedInState) {
+        dispatch(removeUnpersistedOrder({ orderId: order.id, createdAt: order.createdAt }))
+      }
+      setSubmissionError(
+        'We could not save your order in this browser, so it was not submitted. Your cart is unchanged; check browser storage and try again.',
+      )
+      return
+    }
+
     dispatch(clearCart())
     navigate(`/order/${order.id}`)
   }
@@ -128,6 +143,7 @@ const Checkout = () => {
               <span><strong>Cash on delivery</strong><small>Pay when your order arrives</small></span>
             </label>
           </section>
+          {submissionError && <p className="field-error" role="alert">{submissionError}</p>}
           <button type="submit" className="button-primary full-button">Place order · {formatNaira(subtotal + deliveryFee)}</button>
         </form>
 
