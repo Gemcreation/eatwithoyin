@@ -5,15 +5,6 @@ import type { CartItem, CustomerOrder, Food, KitchenSettings, OrderStatus, Rider
 export const ORDER_STORAGE_KEY = 'ew-customer-orders'
 export const DELETED_DEMO_ORDER_STORAGE_KEY = 'ew-deleted-demo-orders'
 
-const readStoredArray = <T,>(key: string): T[] => {
-  try {
-    const value: unknown = JSON.parse(localStorage.getItem(key) ?? '[]')
-    return Array.isArray(value) ? value as T[] : []
-  } catch {
-    return []
-  }
-}
-
 const orderStatuses = new Set<OrderStatus>([
   'ORDER_PLACED',
   'CONFIRMED',
@@ -30,8 +21,79 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
 
 const isText = (value: unknown): value is string => typeof value === 'string'
+const isRequiredText = (value: unknown): value is string =>
+  isText(value) && value.trim().length > 0
 const isFiniteNumber = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value)
+
+const isFoodCategory = (value: unknown): value is Food['category'] =>
+  value === 'Rice' ||
+  value === 'Chicken' ||
+  value === 'Local Dishes' ||
+  value === 'Extras' ||
+  value === 'Drinks' ||
+  value === 'Snacks'
+
+const isCartItem = (value: unknown): value is CartItem =>
+  isRecord(value) &&
+  isRequiredText(value.foodId) &&
+  isRequiredText(value.name) &&
+  isRequiredText(value.image) &&
+  isFiniteNumber(value.price) &&
+  value.price >= 0 &&
+  isFiniteNumber(value.quantity) &&
+  Number.isInteger(value.quantity) &&
+  value.quantity > 0
+
+const isFood = (value: unknown): value is Food =>
+  isRecord(value) &&
+  isRequiredText(value.id) &&
+  isRequiredText(value.name) &&
+  isText(value.description) &&
+  isFiniteNumber(value.price) &&
+  value.price >= 0 &&
+  isRequiredText(value.image) &&
+  isFoodCategory(value.category) &&
+  typeof value.available === 'boolean'
+
+const parseStoredArray = <T,>(
+  raw: string | null,
+  key: string,
+  isValid: (value: unknown) => value is T,
+): T[] => {
+  if (raw === null) return []
+
+  let value: unknown
+  try {
+    value = JSON.parse(raw)
+  } catch (error) {
+    console.error(`[EatWithOyin] Could not parse "${key}" from localStorage.`, error)
+    return []
+  }
+
+  if (!Array.isArray(value)) {
+    console.warn(`[EatWithOyin] Ignoring invalid data in "${key}": expected an array.`)
+    return []
+  }
+
+  const validRecords = value.filter(isValid)
+  if (validRecords.length !== value.length) {
+    console.warn(`[EatWithOyin] Ignored ${value.length - validRecords.length} invalid record(s) in "${key}".`)
+  }
+  return validRecords
+}
+
+const readStoredArray = <T,>(
+  key: string,
+  isValid: (value: unknown) => value is T,
+): T[] => {
+  try {
+    return parseStoredArray(localStorage.getItem(key), key, isValid)
+  } catch (error) {
+    console.error(`[EatWithOyin] Could not read "${key}" from localStorage.`, error)
+    return []
+  }
+}
 
 const isRider = (value: unknown): value is Rider =>
   isRecord(value) &&
@@ -178,13 +240,59 @@ interface OrderingState {
   riderOnline: boolean
 }
 
-const readStoredObject = <T,>(key: string, fallback: T): T => {
+const isKitchenTime = (value: unknown): value is string =>
+  isText(value) && /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(value)
+
+const readKitchenSettings = (): KitchenSettings => {
+  let raw: string | null
   try {
-    const value: unknown = JSON.parse(localStorage.getItem(key) ?? 'null')
-    return value && typeof value === 'object' ? { ...fallback, ...value } : fallback
-  } catch {
-    return fallback
+    raw = localStorage.getItem('ew-kitchen-settings')
+  } catch (error) {
+    console.error('[EatWithOyin] Could not read "ew-kitchen-settings" from localStorage.', error)
+    return { ...defaultKitchenSettings }
   }
+
+  if (raw === null) return { ...defaultKitchenSettings }
+
+  let value: unknown
+  try {
+    value = JSON.parse(raw)
+  } catch (error) {
+    console.error('[EatWithOyin] Could not parse "ew-kitchen-settings" from localStorage.', error)
+    return { ...defaultKitchenSettings }
+  }
+
+  if (!isRecord(value)) {
+    console.warn('[EatWithOyin] Ignoring invalid data in "ew-kitchen-settings": expected an object.')
+    return { ...defaultKitchenSettings }
+  }
+
+  const settings = { ...defaultKitchenSettings }
+  const invalidFields: string[] = []
+  if (isRequiredText(value.name)) settings.name = value.name
+  else invalidFields.push('name')
+  if (isRequiredText(value.phone)) settings.phone = value.phone
+  else invalidFields.push('phone')
+  if (isRequiredText(value.address)) settings.address = value.address
+  else invalidFields.push('address')
+  if (isKitchenTime(value.openingTime)) settings.openingTime = value.openingTime
+  else invalidFields.push('openingTime')
+  if (isKitchenTime(value.closingTime)) settings.closingTime = value.closingTime
+  else invalidFields.push('closingTime')
+  if (typeof value.isOpen === 'boolean') settings.isOpen = value.isOpen
+  else invalidFields.push('isOpen')
+  if (typeof value.deliveryAvailable === 'boolean') {
+    settings.deliveryAvailable = value.deliveryAvailable
+  } else {
+    invalidFields.push('deliveryAvailable')
+  }
+  if (isFiniteNumber(value.deliveryFee) && value.deliveryFee >= 0) settings.deliveryFee = value.deliveryFee
+  else invalidFields.push('deliveryFee')
+
+  if (invalidFields.length > 0) {
+    console.warn(`[EatWithOyin] Restored defaults for invalid or missing kitchen setting(s): ${invalidFields.join(', ')}.`)
+  }
+  return settings
 }
 
 const readStoredBoolean = (key: string, fallback: boolean) => {
@@ -196,17 +304,17 @@ const readStoredBoolean = (key: string, fallback: boolean) => {
   }
 }
 
-const storedFoods = readStoredArray<Food>('ew-menu-foods')
+const storedFoods = readStoredArray('ew-menu-foods', isFood)
 const foodsById = new Map(defaultFoods.map((food) => [food.id, food]))
 storedFoods.forEach((food) => foodsById.set(food.id, food))
 const deletedDemoOrderIds = readDeletedDemoOrderIds()
 
 const initialState: OrderingState = {
-  cart: readStoredArray<CartItem>('ew-customer-cart'),
+  cart: readStoredArray('ew-customer-cart', isCartItem),
   orders: readStoredOrders().filter((order) => !order.isDemo || !deletedDemoOrderIds.includes(order.id)),
   deletedDemoOrderIds,
   foods: [...foodsById.values()],
-  kitchenSettings: readStoredObject<KitchenSettings>('ew-kitchen-settings', defaultKitchenSettings),
+  kitchenSettings: readKitchenSettings(),
   riderOnline: readStoredBoolean('ew-rider-online', true),
 }
 

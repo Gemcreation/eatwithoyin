@@ -9,7 +9,7 @@ import orderingReducer, {
     setOrderStatus,
     synchronizeOrders,
 } from "../features/ordering/orderingSlice";
-import type { CustomerOrder, OrderStatus } from "../features/ordering/types";
+import type { CustomerOrder, KitchenSettings, OrderStatus } from "../features/ordering/types";
 
 type OrderingRoot = { ordering: ReturnType<typeof orderingReducer> };
 const riderStatuses = new Set<OrderStatus>(['RIDER_ASSIGNED', 'PICKED_UP', 'OUT_FOR_DELIVERY', 'DELIVERED'])
@@ -43,14 +43,29 @@ export const store = configureStore({
 
 const persistValue = (key: string, value: string) => {
     try {
-        if (localStorage.getItem(key) !== value) localStorage.setItem(key, value)
+        if (localStorage.getItem(key) === value) return true
+        localStorage.setItem(key, value)
+        return true
     } catch (error) {
         console.error(`[EatWithOyin] Could not persist "${key}". Changes may not survive a refresh.`, error)
+        return false
     }
 }
 
+const initialOrdering = store.getState().ordering
+const persistedReferences = {
+    cart: initialOrdering.cart,
+    orders: initialOrdering.orders,
+    orderTombstones: initialOrdering.deletedDemoOrderIds,
+    deletedDemoOrderIds: initialOrdering.deletedDemoOrderIds,
+    foods: initialOrdering.foods,
+    kitchenSettings: initialOrdering.kitchenSettings,
+    riderOnline: initialOrdering.riderOnline,
+}
+
 store.subscribe(() => {
-    const { cart, orders, deletedDemoOrderIds, foods, kitchenSettings, riderOnline } = store.getState().ordering
+    const ordering = store.getState().ordering
+    const { cart, orders, deletedDemoOrderIds, foods, kitchenSettings, riderOnline } = ordering
     let persistedTombstones = deletedDemoOrderIds
     try {
         persistedTombstones = [...new Set([
@@ -61,14 +76,33 @@ store.subscribe(() => {
         console.error(`[EatWithOyin] Could not reconcile deleted demo IDs from "${DELETED_DEMO_ORDER_STORAGE_KEY}".`, error)
     }
 
-    persistValue(DELETED_DEMO_ORDER_STORAGE_KEY, JSON.stringify(persistedTombstones))
-    persistValue('ew-customer-cart', JSON.stringify(cart))
-    persistValue(ORDER_STORAGE_KEY, JSON.stringify(
-        orders.filter((order) => !order.isDemo || !persistedTombstones.includes(order.id)),
-    ))
-    persistValue('ew-menu-foods', JSON.stringify(foods))
-    persistValue('ew-kitchen-settings', JSON.stringify(kitchenSettings))
-    persistValue('ew-rider-online', String(riderOnline))
+    if (deletedDemoOrderIds !== persistedReferences.deletedDemoOrderIds &&
+        persistValue(DELETED_DEMO_ORDER_STORAGE_KEY, JSON.stringify(persistedTombstones))) {
+        persistedReferences.deletedDemoOrderIds = deletedDemoOrderIds
+    }
+
+    if ((orders !== persistedReferences.orders || deletedDemoOrderIds !== persistedReferences.orderTombstones) &&
+        persistValue(ORDER_STORAGE_KEY, JSON.stringify(
+            orders.filter((order) => !order.isDemo || !persistedTombstones.includes(order.id)),
+        ))) {
+        persistedReferences.orders = orders
+        persistedReferences.orderTombstones = deletedDemoOrderIds
+    }
+
+    if (cart !== persistedReferences.cart && persistValue('ew-customer-cart', JSON.stringify(cart))) {
+        persistedReferences.cart = cart
+    }
+    if (foods !== persistedReferences.foods && persistValue('ew-menu-foods', JSON.stringify(foods))) {
+        persistedReferences.foods = foods
+    }
+    if (kitchenSettings !== persistedReferences.kitchenSettings &&
+        persistValue('ew-kitchen-settings', JSON.stringify(kitchenSettings))) {
+        persistedReferences.kitchenSettings = kitchenSettings
+    }
+    if (riderOnline !== persistedReferences.riderOnline &&
+        persistValue('ew-rider-online', String(riderOnline))) {
+        persistedReferences.riderOnline = riderOnline
+    }
 })
 
 // localStorage has no transactions or compare-and-swap; concurrent writes can briefly race.
@@ -113,6 +147,15 @@ export const isOrderPersisted = (order: CustomerOrder) => {
         return orders.some((storedOrder) => JSON.stringify(storedOrder) === JSON.stringify(order))
     } catch (error) {
         console.error(`[EatWithOyin] Could not verify order persistence in "${ORDER_STORAGE_KEY}".`, error)
+        return false
+    }
+}
+
+export const isKitchenSettingsPersisted = (settings: KitchenSettings) => {
+    try {
+        return localStorage.getItem('ew-kitchen-settings') === JSON.stringify(settings)
+    } catch (error) {
+        console.error('[EatWithOyin] Could not verify kitchen settings persistence.', error)
         return false
     }
 }

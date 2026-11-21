@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import type { AppDispatch, RootState } from '../../../app/store'
+import { isKitchenSettingsPersisted, type AppDispatch, type RootState } from '../../../app/store'
 import { updateKitchenSettings } from '../../../features/ordering/orderingSlice'
 import type { KitchenSettings } from '../../../features/ordering/types'
 
@@ -9,11 +9,13 @@ const KitchenSettingsPage = () => {
   const settings = useSelector((state: RootState) => state.ordering.kitchenSettings)
   const [fields, setFields] = useState<KitchenSettings>(settings)
   const [saved, setSaved] = useState(false)
+  const [saveError, setSaveError] = useState('')
   const [feeError, setFeeError] = useState('')
 
   const updateField = <K extends keyof KitchenSettings>(key: K, value: KitchenSettings[K]) => {
     setFields((current) => ({ ...current, [key]: value }))
     setSaved(false)
+    setSaveError('')
   }
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
@@ -24,7 +26,9 @@ const KitchenSettingsPage = () => {
     }
     setFeeError('')
     dispatch(updateKitchenSettings(fields))
-    setSaved(true)
+    const persisted = isKitchenSettingsPersisted(fields)
+    setSaved(persisted)
+    setSaveError(persisted ? '' : 'Settings could not be saved on this device. Please try again.')
   }
 
   return (
@@ -54,7 +58,7 @@ const KitchenSettingsPage = () => {
             <label className="kitchen-switch-field"><input type="checkbox" checked={fields.deliveryAvailable} onChange={(event) => updateField('deliveryAvailable', event.target.checked)} /><span><strong>Delivery available</strong><small>Mock setting; does not yet restrict order placement.</small></span></label>
           </div>
         </section>
-        <footer className="kitchen-settings-actions"><span role="status">{saved ? 'Settings saved on this device.' : ''}</span><button type="submit" className="kitchen-primary-link">Save settings</button></footer>
+        <footer className="kitchen-settings-actions"><span role="status">{saved ? 'Settings saved on this device.' : saveError}</span><button type="submit" className="kitchen-primary-link">Save settings</button></footer>
       </form>
     </div>
   )
